@@ -32,6 +32,6 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
-        return new Response('hello');
+        return new Response($this->twig->render('pages/home.html.twig'));
     }
 }
