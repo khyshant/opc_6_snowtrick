@@ -62,15 +62,15 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
-    public function find4ByAuthor($value): array
+    public function findXByAuthor($value, $number): array
     {
         return $this->findByAuthorIdQuery($value)
-            ->setMaxResults(4)
+            ->setMaxResults($number)
             ->getQuery()
             ->getResult()
             ;
     }
-
+        //code commun au différente methode de findbyauthor
         private function findByAuthorIdQuery($value) :QueryBuilder
         {
             return $this->createQueryBuilder('t')
