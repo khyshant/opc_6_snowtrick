@@ -21,10 +21,6 @@ use Twig\Environment;
  */
 class HomeController extends AbstractController
 {
-    /*
-     * @ Environment
-     **/
-    private $twig;
 
     public function __construct(TrickRepository $trickRepository)
     {

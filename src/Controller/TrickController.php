@@ -18,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class TrickController extends AbstractController
 {
     private $trickRepository;
-    private $entityManager;
 
     public function __construct(TrickRepository $trickRepository)
     {
