@@ -49,6 +49,8 @@ class TrickRepository extends ServiceEntityRepository
     }
     */
 
+    //return is typed as an array of tricks for helping my IDE  to use completion
+
     /**
      * @param $value
      * @return Trick[]
@@ -62,6 +64,11 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @param $value
+     * @param $number
+     * @return Trick[]
+     */
     public function findXByAuthor($value, $number): array
     {
         return $this->findByAuthorIdQuery($value)
