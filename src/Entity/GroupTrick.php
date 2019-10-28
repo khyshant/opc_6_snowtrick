@@ -37,14 +37,14 @@ class GroupTrick
     private $date_upd;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Media")
+     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
      */
     private $Cover_id;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="Media")
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
+     * @ORM\Column(type="boolean")
      */
     private $valid;
 

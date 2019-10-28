@@ -4,21 +4,28 @@
 {% block metatitle %}my meta-title{% endblock %}
 
 {% block body %}
-<h1>gestion des tricks</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>titre</th>
-            <th>actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for trick in tricks %}
+    <div class="container">
+        <div class="text-right">
+            <a href="{{ path('admin.trick.new') }}">new</a>
+        </div>
+        <table>
+            <thead>
             <tr>
-                <td>{{ trick.name }}</td>
-                <td><a class="btn btn-secondary" href="{{ path('admin.trick.edit',{id: trick.id}) }}">edit </a></td>
+                <th>titre</th>
+                <th>actions</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% for trick in tricks %}
+                <tr>
+                    <td>{{ trick.name }}</td>
+                    <td><a class="btn btn-secondary" href="{{ path('admin.trick.edit',{id: trick.id}) }}">edit </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+<h1>gestion des tricks</h1>
+
 {% endblock %}

@@ -67,6 +67,12 @@ class Trick
      */
     private $update_at;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="GroupTrick")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     */
+    private $groupTrick;
+
     public function __construct(){
         $this->date_add = new \DateTime();
         $this->update_at = new \DateTime();
@@ -188,5 +194,21 @@ class Trick
         $this->update_at = $update_at;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupTrick()
+    {
+        return $this->groupTrick;
+    }
+
+    /**
+     * @param mixed $groupTrick
+     */
+    public function setGroupTrick($groupTrick): void
+    {
+        $this->groupTrick = $groupTrick;
     }
 }

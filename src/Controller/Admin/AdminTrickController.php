@@ -9,8 +9,11 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Trick;
+use App\Form\TrickType;
 use App\Repository\TrickRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminTrickController extends AbstractController
@@ -22,12 +25,19 @@ class AdminTrickController extends AbstractController
     */
     private $trickRepository;
     /**
+     * @var ObjectManager
+     */
+    private $objectManager;
+
+    /**
      * AdminFormController constructor.
      * @param TrickRepository $trickRepository
      */
-    public function __construct(TrickRepository $trickRepository)
+
+    public function __construct(TrickRepository $trickRepository, ObjectManager $objectManager)
     {
         $this->trickRepository = $trickRepository;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -45,8 +55,39 @@ class AdminTrickController extends AbstractController
      * @param Trick $trick
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Trick $trick)
+    public function edit(Trick $trick,Request $request )
     {
-         return $this->render('admin/tricks/edit.html.twig',compact('trick'));
+         $form = $this->createForm(TrickType::class,$trick );
+         $form->handleRequest($request);
+
+         if($form->isSubmitted() && $form->isValid()){
+             $this->objectManager->flush();
+             return $this->redirectToRoute('admin.trick.index');
+         }
+         return $this->render('admin/tricks/edit.html.twig', [
+             'trick' => $trick,
+             'form' => $form->createView(),
+         ]);
+    }
+
+    /**
+     * @Route("/admin/trick/create", name="admin.trick.new")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function new(Request $request)
+    {
+         $trick = new Trick();
+         $form = $this->createForm(TrickType::class);
+         $form->handleRequest($request);
+
+         if($form->isSubmitted() && $form->isValid()){
+             $this->objectManager->persist($trick);
+             $this->objectManager->flush();
+             return $this->redirectToRoute('admin.trick.index');
+         }
+         return $this->render('admin/tricks/edit.html.twig', [
+             'trick' => $trick,
+             'form' => $form->createView(),
+         ]);
     }
 }
