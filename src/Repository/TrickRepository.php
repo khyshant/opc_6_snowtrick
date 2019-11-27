@@ -4,8 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * @method Trick|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class TrickRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Trick::class);
     }
@@ -48,40 +47,4 @@ class TrickRepository extends ServiceEntityRepository
         ;
     }
     */
-
-    //return is typed as an array of tricks for helping my IDE  to use completion
-
-    /**
-     * @param $value
-     * @return Trick[]
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function findByAuthor($value): array
-    {
-        return $this->findByAuthorIdQuery($value)
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    /**
-     * @param $value
-     * @param $number
-     * @return Trick[]
-     */
-    public function findXByAuthor($value, $number): array
-    {
-        return $this->findByAuthorIdQuery($value)
-            ->setMaxResults($number)
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-        //code commun au différente methode de findbyauthor
-        private function findByAuthorIdQuery($value) :QueryBuilder
-        {
-            return $this->createQueryBuilder('t')
-                ->where('t.author_id = :val' )
-                ->setParameter('val', $value);
-        }
 }

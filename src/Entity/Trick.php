@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use App\Entity\Media;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrickRepository")
@@ -23,39 +26,19 @@ class Trick
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $author_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
-     */
-    private $cover_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="Media")
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
-     */
-    private $group_id;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
-     *
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $metatitle;
+    private $metaTitle;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $meta_description;
+    private $metaDescription;
 
     /**
      * @ORM\Column(type="datetime")
@@ -65,17 +48,34 @@ class Trick
     /**
      * @ORM\Column(type="datetime")
      */
-    private $update_at;
+    private $date_upd;
 
     /**
-     * @ORM\ManyToOne(targetEntity="GroupTrick")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
      */
-    private $groupTrick;
+    private $comments;
 
-    public function __construct(){
-        $this->date_add = new \DateTime();
-        $this->update_at = new \DateTime();
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\GroupTrick", inversedBy="tricks")
+     */
+    private $groupTricks;
+    protected $groupTrick;
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Media", mappedBy="trick", cascade={"persist"}, orphanRemoval=true))
+     */
+    private $medias;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->groupTricks = new ArrayCollection();
+        $this->medias = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,50 +88,9 @@ class Trick
         return $this->name;
     }
 
-    public function getSlug() :string
-    {
-        return  (new Slugify())->slugify($this->name);
-    }
-
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getAuthorId(): ?int
-    {
-        return $this->author_id;
-    }
-
-    public function setAuthorId(int $author_id): self
-    {
-        $this->author_id = $author_id;
-
-        return $this;
-    }
-
-    public function getCoverId(): ?int
-    {
-        return $this->cover_id;
-    }
-
-    public function setCoverId(int $cover_id): self
-    {
-        $this->cover_id = $cover_id;
-
-        return $this;
-    }
-
-    public function getGroupId(): ?int
-    {
-        return $this->group_id;
-    }
-
-    public function setGroupId(int $group_id): self
-    {
-        $this->group_id = $group_id;
 
         return $this;
     }
@@ -148,26 +107,26 @@ class Trick
         return $this;
     }
 
-    public function getMetatitle(): ?string
+    public function getMetaTitle(): ?string
     {
-        return $this->metatitle;
+        return $this->metaTitle;
     }
 
-    public function setMetatitle(?string $metatitle): self
+    public function setMetaTitle(?string $metaTitle): self
     {
-        $this->metatitle = $metatitle;
+        $this->metaTitle = $metaTitle;
 
         return $this;
     }
 
     public function getMetaDescription(): ?string
     {
-        return $this->meta_description;
+        return $this->metaDescription;
     }
 
-    public function setMetaDescription(?string $meta_description): self
+    public function setMetaDescription(?string $metaDescription): self
     {
-        $this->meta_description = $meta_description;
+        $this->metaDescription = $metaDescription;
 
         return $this;
     }
@@ -184,31 +143,127 @@ class Trick
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeInterface
+    public function getDateUpd(): ?\DateTimeInterface
     {
-        return $this->update_at;
+        return $this->date_upd;
     }
 
-    public function setUpdateAt(\DateTimeInterface $update_at): self
+    public function setDateUpd(\DateTimeInterface $date_upd): self
     {
-        $this->update_at = $update_at;
+        $this->date_upd = $date_upd;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return Collection|Comment[]
      */
-    public function getGroupTrick()
+    public function getComments(): Collection
     {
-        return $this->groupTrick;
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getTrick() === $this) {
+                $comment->setTrick(null);
+            }
+        }
+
+        return $this;
     }
 
     /**
-     * @param mixed $groupTrick
+     * @return Collection|GroupTrick[]
      */
-    public function setGroupTrick($groupTrick): void
+    public function getGroupTricks(): Collection
     {
-        $this->groupTrick = $groupTrick;
+        return $this->groupTricks;
+    }
+
+    public function addGroupTrick(GroupTrick $groupTrick): self
+    {
+        // Bidirectional Ownership
+        $groupTrick->addTrick($this);
+
+        $this->groupTricks[] = $groupTrick;
+
+
+        return $this;
+    }
+
+    public function removeGroupTrick(GroupTrick $groupTrick): self
+    {
+        if ($this->groupTrick->contains($groupTrick)) {
+            $this->groupTrick->removeElement($groupTrick);
+        }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Media[]
+     */
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
+
+
+    /**
+     * @param Media $media
+     * @return Trick
+     */
+    public function addMedia(Media $media)
+    {
+        // Bidirectional Ownership
+        $media->setTrick($this);
+
+        $this->medias[] = $media;
+
+
+        return $this;
+    }
+
+    public function removeMedia(Media $media): self
+    {
+        if ($this->medias->contains($media)) {
+            $this->medias->removeElement($media);
+            // set the owning side to null (unless already changed)
+            if ($media->getTrick() === $this) {
+                $media->setTrick(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getSlug() :string
+    {
+        return  (new Slugify())->slugify($this->name);
     }
 }

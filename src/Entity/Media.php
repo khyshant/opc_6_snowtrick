@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MediaRepository")
@@ -17,26 +18,12 @@ class Media
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="Type")
-     * @ORM\JoinColumn(name="type_id", referencedColumnName="id")
+     * @ORM\Column(type="string", length=255)
      */
-
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=5)
-     */
-
-    private $author_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $trick_id;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $uri;
 
@@ -45,7 +32,26 @@ class Media
      */
     private $date_add;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="medias")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $trick;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupTrick", inversedBy="media")
+     */
+    private $groupTrick;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $filename;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $extension;
 
     public function getId(): ?int
     {
@@ -60,30 +66,6 @@ class Media
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getAuthorId(): ?int
-    {
-        return $this->author_id;
-    }
-
-    public function setAuthorId(int $author_id): self
-    {
-        $this->author_id = $author_id;
-
-        return $this;
-    }
-
-    public function getTrickId(): ?int
-    {
-        return $this->trick_id;
-    }
-
-    public function setTrickId(int $trick_id): self
-    {
-        $this->trick_id = $trick_id;
 
         return $this;
     }
@@ -111,4 +93,55 @@ class Media
 
         return $this;
     }
+
+    public function getTrick(): ?Trick
+    {
+        return $this->trick;
+    }
+
+    public function setTrick(?Trick $trick): self
+    {
+        $this->trick = $trick;
+
+        return $this;
+    }
+
+    public function getGroupTrick(): ?GroupTrick
+    {
+        return $this->groupTrick;
+    }
+
+    public function setGroupTrick(?GroupTrick $groupTrick): self
+    {
+        $this->groupTrick = $groupTrick;
+
+        return $this;
+    }
+
+    public function getFilename(): ?string
+    {
+        return $this->filename;
+    }
+
+    public function setFilename(string $filename): self
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(string $extension): self
+    {
+        $this->extension = $extension;
+
+        return $this;
+    }
+
+
+
 }

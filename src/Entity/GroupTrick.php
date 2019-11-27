@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GroupRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\GroupTrickRepository")
  */
 class GroupTrick
 {
@@ -22,26 +24,9 @@ class GroupTrick
     private $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $date_add;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $date_upd;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="Media")
-     * @ORM\JoinColumn(name="media_id", referencedColumnName="id")
-     */
-    private $Cover_id;
 
     /**
      * @ORM\Column(type="boolean")
@@ -49,9 +34,31 @@ class GroupTrick
     private $valid;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="datetime")
      */
-    private $published;
+    private $date_add;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_upd;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Trick", mappedBy="groupTricks")
+     */
+    private $tricks;
+    private $trick;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Media", mappedBy="groupTrick")
+     */
+    private $media;
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+        $this->media = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,9 +82,21 @@ class GroupTrick
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getValid(): ?bool
+    {
+        return $this->valid;
+    }
+
+    public function setValid(bool $valid): self
+    {
+        $this->valid = $valid;
 
         return $this;
     }
@@ -99,45 +118,68 @@ class GroupTrick
         return $this->date_upd;
     }
 
-    public function setDateUpd(\DateTimeInterface $date_upd): self
+    public function setDateUpd(?\DateTimeInterface $date_upd): self
     {
         $this->date_upd = $date_upd;
 
         return $this;
     }
 
-    public function getCoverId(): ?int
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
     {
-        return $this->Cover_id;
+        return $this->tricks;
     }
 
-    public function setCoverId(?int $Cover_id): self
+    public function addTrick(Trick $trick): self
     {
-        $this->Cover_id = $Cover_id;
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->addGroupTrick($this);
+        }
 
         return $this;
     }
 
-    public function getValid(): ?int
+    public function removeTrick(Trick $trick): self
     {
-        return $this->valid;
-    }
-
-    public function setValid(int $valid): self
-    {
-        $this->valid = $valid;
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+            $trick->removeGroupTrick($this);
+        }
 
         return $this;
     }
 
-    public function getPublished(): ?int
+    /**
+     * @return Collection|Media[]
+     */
+    public function getMedia(): Collection
     {
-        return $this->published;
+        return $this->media;
     }
 
-    public function setPublished(int $published): self
+    public function addMedium(Media $medium): self
     {
-        $this->published = $published;
+        if (!$this->media->contains($medium)) {
+            $this->media[] = $medium;
+            $medium->setGroupTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): self
+    {
+        if ($this->media->contains($medium)) {
+            $this->media->removeElement($medium);
+            // set the owning side to null (unless already changed)
+            if ($medium->getGroupTrick() === $this) {
+                $medium->setGroupTrick(null);
+            }
+        }
 
         return $this;
     }

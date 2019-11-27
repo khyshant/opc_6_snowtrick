@@ -8,22 +8,22 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Trick;
-use App\Form\TrickType;
-use App\Repository\TrickRepository;
+use App\Entity\Media;
+use App\Form\MediaType;
+use App\Repository\MediaRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AdminTrickController extends AbstractController
+class AdminMediaController extends AbstractController
 {
 
 
     /**
-     * @var TrickRepository
+     * @var mediaRepository
     */
-    private $trickRepository;
+    private $MediaRepository;
     /**
      * @var ObjectManager
      */
@@ -31,42 +31,42 @@ class AdminTrickController extends AbstractController
 
     /**
      * AdminFormController constructor.
-     * @param TrickRepository $trickRepository
+     * @param mediaRepository $MediaRepository
      */
 
-    public function __construct(TrickRepository $trickRepository, ObjectManager $objectManager)
+    public function __construct(mediaRepository $MediaRepository, ObjectManager $objectManager)
     {
-        $this->trickRepository = $trickRepository;
+        $this->mediaRepository = $MediaRepository;
         $this->objectManager = $objectManager;
     }
 
     /**
-     * @Route("/admin/tricks",name="admin.trick.index")
+     * @Route("/admin",name="admin.trick.index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index()
     {
-        $tricks = $this->trickRepository->findAll();
-        return $this->render('admin/tricks/index.html.twig',compact('tricks'));
+        $media = $this->mediaRepository->findAll();
+        return $this->render('admin/media/index.html.twig',compact('media'));
     }
 
     /**
-     * @Route("/admin/trick/{id}", name="admin.trick.edit")
-     * @param Trick $trick
+     * @Route("/admin/media/{id}", name="admin.media.edit")
+     * @param Media $media
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Trick $trick,Request $request )
+    public function edit(Media $media,Request $request )
     {
-         $form = $this->createForm(TrickType::class,$trick );
+         $form = $this->createForm(MediaType::class,$media );
          $form->handleRequest($request);
 
          if($form->isSubmitted() && $form->isValid()){
              $this->objectManager->flush();
-             $this->objectManager->persist($trick);
-             return $this->redirectToRoute('admin.trick.index');
+             $this->objectManager->persist($media);
+             return $this->redirectToRoute('admin.media.index');
          }
-         return $this->render('admin/tricks/edit.html.twig', [
-             'trick' => $trick,
+         return $this->render('admin/media/edit.html.twig', [
+             'media' => $media,
              'form' => $form->createView(),
          ]);
     }
@@ -77,8 +77,8 @@ class AdminTrickController extends AbstractController
      */
     public function new(Request $request)
     {
-         $trick = new Trick();
-         $form = $this->createForm(TrickType::class);
+         $media = new Media();
+         $form = $this->createForm(MediaType::class);
          $form->handleRequest($request);
 
          if($form->isSubmitted() && $form->isValid()){
@@ -86,10 +86,10 @@ class AdminTrickController extends AbstractController
 
              $this->objectManager->persist($trick);
              $this->objectManager->flush();
-             return $this->redirectToRoute('admin.trick.index');
+             return $this->redirectToRoute('admin.media.index');
          }
-         return $this->render('admin/tricks/edit.html.twig', [
-             'trick' => $trick,
+         return $this->render('admin/media/edit.html.twig', [
+             'media' => $media,
              'form' => $form->createView(),
          ]);
     }

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,7 +34,7 @@ class User
     private $lastname;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      */
     private $birthday;
 
@@ -42,18 +44,20 @@ class User
     private $date_add;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\OneToMany(targetEntity="App\Entity\Trick", mappedBy="author")
      */
-    private $date_upd;
+    private $tricks;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
      */
-    private $avatar;
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
+    private $comments;
+
+    public function __construct()
+    {
+        $this->tricks = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -101,7 +105,7 @@ class User
         return $this->birthday;
     }
 
-    public function setBirthday(\DateTimeInterface $birthday): self
+    public function setBirthday(?\DateTimeInterface $birthday): self
     {
         $this->birthday = $birthday;
 
@@ -120,38 +124,63 @@ class User
         return $this;
     }
 
-    public function getDateUpd(): ?\DateTimeInterface
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getTricks(): Collection
     {
-        return $this->date_upd;
+        return $this->tricks;
     }
 
-    public function setDateUpd(\DateTimeInterface $date_upd): self
+    public function addTrick(Trick $trick): self
     {
-        $this->date_upd = $date_upd;
+        if (!$this->tricks->contains($trick)) {
+            $this->tricks[] = $trick;
+            $trick->setAuthor($this);
+        }
 
         return $this;
     }
 
-    public function getAvatar(): ?string
+    public function removeTrick(Trick $trick): self
     {
-        return $this->avatar;
+        if ($this->tricks->contains($trick)) {
+            $this->tricks->removeElement($trick);
+            // set the owning side to null (unless already changed)
+            if ($trick->getAuthor() === $this) {
+                $trick->setAuthor(null);
+            }
+        }
+        return $this;
     }
 
-    public function setAvatar(?string $avatar): self
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
     {
-        $this->avatar = $avatar;
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setAuthor($this);
+        }
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function removeComment(Comment $comment): self
     {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getAuthor() === $this) {
+                $comment->setAuthor(null);
+            }
+        }
 
         return $this;
     }

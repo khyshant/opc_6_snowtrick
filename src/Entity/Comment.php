@@ -17,18 +17,9 @@ class Comment
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     * @ORM\Column(type="text")
      */
-    private $author_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\ManyToOne(targetEntity="Trick")
-     * @ORM\JoinColumn(name="Trick_id", referencedColumnName="id")
-     */
-    private $trick_id;
+    private $comment;
 
     /**
      * @ORM\Column(type="datetime")
@@ -36,40 +27,34 @@ class Comment
     private $date_add;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $date_valid;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="comments")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $comment;
+    private $trick;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+     */
+    private $author;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getAuthorId(): ?int
+    public function getComment(): ?string
     {
-        return $this->author_id;
+        return $this->comment;
     }
 
-    public function setAuthorId(int $author_id): self
+    public function setComment(string $comment): self
     {
-        $this->author_id = $author_id;
-
-        return $this;
-    }
-
-    public function getTrickId(): ?int
-    {
-        return $this->trick_id;
-    }
-
-    public function setTrickId(int $trick_id): self
-    {
-        $this->trick_id = $trick_id;
+        $this->comment = $comment;
 
         return $this;
     }
@@ -91,21 +76,33 @@ class Comment
         return $this->date_valid;
     }
 
-    public function setDateValid(\DateTimeInterface $date_valid): self
+    public function setDateValid(?\DateTimeInterface $date_valid): self
     {
         $this->date_valid = $date_valid;
 
         return $this;
     }
 
-    public function getComment(): ?string
+    public function getTrick(): ?Trick
     {
-        return $this->comment;
+        return $this->trick;
     }
 
-    public function setComment(string $comment): self
+    public function setTrick(?Trick $trick): self
     {
-        $this->comment = $comment;
+        $this->trick = $trick;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}my admin page{% endblock %}
+{% block metadesc %}my meta-desc{% endblock %}
+{% block metatitle %}my meta-title{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="text-right">
+            <a href="{{ path('admin.trick.new') }}">new</a>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>titre</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for trick in tricks %}
+                <tr>
+                    <td>{{ trick.name }}</td>
+                    <td><a class="btn btn-secondary" href="{{ path('admin.trick.edit',{id: trick.id}) }}">edit </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+<h1>gestion des tricks</h1>
+
+{% endblock %}
