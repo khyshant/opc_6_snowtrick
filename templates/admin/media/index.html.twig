@@ -6,7 +6,7 @@
 {% block body %}
     <div class="container">
         <div class="text-right">
-            <a href="{{ path('admin.trick.new') }}">new</a>
+            <a href="{{ path('admin.media.new') }}">new</a>
         </div>
         <table>
             <thead>
@@ -16,10 +16,10 @@
             </tr>
             </thead>
             <tbody>
-            {% for trick in tricks %}
+            {% for media in medias %}
                 <tr>
-                    <td>{{ trick.name }}</td>
-                    <td><a class="btn btn-secondary" href="{{ path('admin.trick.edit',{id: trick.id}) }}">edit </a></td>
+                    <td>{{ media.title }}</td>
+                    <td><a class="btn btn-secondary" href="{{ path('admin.media.edit',{id: media.id}) }}">edit </a></td>
                 </tr>
             {% endfor %}
             </tbody>

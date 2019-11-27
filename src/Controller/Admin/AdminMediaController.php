@@ -41,13 +41,13 @@ class AdminMediaController extends AbstractController
     }
 
     /**
-     * @Route("/admin",name="admin.trick.index")
+     * @Route("/admin/medias",name="admin.media.index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index()
     {
-        $media = $this->mediaRepository->findAll();
-        return $this->render('admin/media/index.html.twig',compact('media'));
+        $medias = $this->mediaRepository->findAll();
+        return $this->render('admin/media/index.html.twig',compact('medias'));
     }
 
     /**
@@ -72,7 +72,7 @@ class AdminMediaController extends AbstractController
     }
 
     /**
-     * @Route("/admin/trick/create", name="admin.trick.new")
+     * @Route("/admin/media/create", name="admin.media.new")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function new(Request $request)
