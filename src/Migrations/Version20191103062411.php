@@ -22,9 +22,9 @@ final class Version20191103062411 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE comment ADD author_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526CF675F31B FOREIGN KEY (author_id) REFERENCES user (id)');
-        $this->addSql('CREATE INDEX IDX_9474526CF675F31B ON comment (author_id)');
+        //$this->addSql('ALTER TABLE comment ADD author_id INT DEFAULT NULL');
+        //$this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526CF675F31B FOREIGN KEY (author_id) REFERENCES user (id)');
+        //$this->addSql('CREATE INDEX IDX_9474526CF675F31B ON comment (author_id)');
     }
 
     public function down(Schema $schema) : void
@@ -32,8 +32,8 @@ final class Version20191103062411 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE comment DROP FOREIGN KEY FK_9474526CF675F31B');
-        $this->addSql('DROP INDEX IDX_9474526CF675F31B ON comment');
-        $this->addSql('ALTER TABLE comment DROP author_id');
+        //$this->addSql('ALTER TABLE comment DROP FOREIGN KEY FK_9474526CF675F31B');
+        //$this->addSql('DROP INDEX IDX_9474526CF675F31B ON comment');
+       // $this->addSql('ALTER TABLE comment DROP author_id');
     }
 }

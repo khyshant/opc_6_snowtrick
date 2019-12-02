@@ -30,15 +30,6 @@ class FakerFixtures extends Fixture
 
             $manager->persist($groupTrick);
             $manager->flush();
-            $media = new Media();
-            $media->setTitle($faker->word());
-            $media->setFilename($faker->word());
-            $media->setExtension('png');
-            $media->setUri($faker->imageUrl());
-            $media->setDateAdd($faker->dateTimeThisYear());
-            $media->setGroupTrick($groupTrick);
-            $manager->persist($media);
-            $manager->flush();
             $a=rand(1,2);
             for ($b = 0; $b < $a; $b++) {
                 $user= new User();
@@ -67,10 +58,7 @@ class FakerFixtures extends Fixture
                     $e= rand(0,5);
                     for ($f = 0; $f < $c; $f++) {
                         $media = new Media();
-                        $media->setTitle($faker->word());
                         $media->setUri($faker->imageUrl());
-                        $media->setFilename($faker->word());
-                        $media->setExtension('png');
                         $media->setDateAdd($faker->dateTimeThisYear());
                         $media->setTrick($trick);
                         $manager->persist($media);

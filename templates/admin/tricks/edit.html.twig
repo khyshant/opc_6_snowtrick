@@ -7,9 +7,47 @@
     <div class="container">
         <h1>{{ trick.name }} edit</h1>
         {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary">save</button>
-        {{ form_end(form) }}
+        {{ form_widget(form._token) }}
+        <div class="card-body">
+            {{ form_row(form.name) }}
+            {{ form_row(form.author) }}
+            {{ form_row(form.description) }}
+            <button class="btn btn-primary btn-add" type="button" data-target="#medias">Ajouter une image</button>
+            <div
+                    id="medias"
+                    data-index="{{ form.medias|length == 0 ? 0 : form.medias|last.vars.name + 1  }}"
+                    data-prototype="{{ include("admin/tricks/media.html.twig", { form: form.medias.vars.prototype })|e("html_attr") }}"
+            >
+                {% for media in form.medias %}
+                    {{ include("admin/tricks/media.html.twig", { form: media }) }}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-block btn-lg btn-primary">Modifier</button>
+        </div>
+        {{ form_end(form, { render_rest: false }) }}
     </div>
 
+{% endblock %}
+{% block javascript %}
+    <script>
+    $(function()  {
+        $(".btn-add").on("click", function () {
+            var placeholder = $($(this).data("target"));
+            var prototype = placeholder.data("prototype");
+            var index = placeholder.data("index");
+
+            placeholder.append(prototype.replace(/__name__/g, index));
+
+            index++;
+
+            placeholder.data("index", index);
+        });
+
+        $("body").on("click", ".btn-remove", function () {
+            $($(this).data("target")).remove();
+        });
+    });
+</script>
 {% endblock %}

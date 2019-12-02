@@ -5,7 +5,7 @@ namespace App\Entity;
 use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\Media;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Trick
 {
     /**
+     * @var int|null
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -21,21 +22,26 @@ class Trick
     private $id;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
+     * @var string|null
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
     /**
+     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $metaTitle;
 
     /**
+     * @var string|null
      * @ORM\Column(type="text", nullable=true)
      */
     private $metaDescription;
@@ -51,15 +57,18 @@ class Trick
     private $date_upd;
 
     /**
+     * @var Collection
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
      */
     private $comments;
 
     /**
+     * @var Collection
      * @ORM\ManyToMany(targetEntity="App\Entity\GroupTrick", inversedBy="tricks")
      */
     private $groupTricks;
     protected $groupTrick;
+
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
      * @ORM\JoinColumn(nullable=false)
@@ -243,22 +252,14 @@ class Trick
     {
         // Bidirectional Ownership
         $media->setTrick($this);
-
-        $this->medias[] = $media;
-
-
+        $this->medias->add($media);
         return $this;
     }
 
     public function removeMedia(Media $media): self
     {
-        if ($this->medias->contains($media)) {
-            $this->medias->removeElement($media);
-            // set the owning side to null (unless already changed)
-            if ($media->getTrick() === $this) {
-                $media->setTrick(null);
-            }
-        }
+        $media->setTrick(null);
+        $this->medias->removeElement($media);
         return $this;
     }
 

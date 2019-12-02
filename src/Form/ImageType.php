@@ -2,28 +2,33 @@
 
 namespace App\Form;
 
-use App\Entity\Media;
+use App\Entity\Image;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\File;
 
-class MediaType extends AbstractType
+/**
+ * Class ImageType
+ * @package App\Form
+ */
+class ImageType extends AbstractType
 {
+    /**
+     * @inheritDoc
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder->add("uploadedFile", FileType::class, [
-           "required" => false
+            "required" => false
         ]);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Media::class,
-        ]);
+        $resolver->setDefault("data_class", Image::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MediaRepository")
@@ -18,11 +19,15 @@ class Media
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var UploadedFile|null
+     * @Assert\Image
+     * @Assert\NotNull(groups={"add"})
      */
-    private $title;
+    private $uploadedFile;
+
 
     /**
+     * @var string|null
      * @ORM\Column(type="text")
      */
     private $uri;
@@ -33,41 +38,16 @@ class Media
     private $date_add;
 
     /**
+     * @var Trick|null
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="medias")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $trick;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupTrick", inversedBy="media")
-     */
-    private $groupTrick;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $filename;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $extension;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function getUri(): ?string
@@ -75,11 +55,12 @@ class Media
         return $this->uri;
     }
 
-    public function setUri(string $uri): self
+    /**
+     * @param string|null $path
+     */
+    public function setUri(?string $uri): void
     {
         $this->uri = $uri;
-
-        return $this;
     }
 
     public function getDateAdd(): ?\DateTimeInterface
@@ -106,61 +87,19 @@ class Media
         return $this;
     }
 
-    public function getGroupTrick(): ?GroupTrick
-    {
-        return $this->groupTrick;
-    }
-
-    public function setGroupTrick(?GroupTrick $groupTrick): self
-    {
-        $this->groupTrick = $groupTrick;
-
-        return $this;
-    }
-
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    public function setFilename(string $filename): self
-    {
-        $this->filename = $filename;
-
-        return $this;
-    }
-
-    public function getExtension(): ?string
-    {
-        return $this->extension;
-    }
-
-    public function setExtension(string $extension): self
-    {
-        $this->extension = $extension;
-
-        return $this;
-    }
-
-    //temporary file
-    private $file;
-
     /**
-     * @return mixed
+     * @return UploadedFile|null
      */
-    public function getFile()
+    public function getUploadedFile(): ?UploadedFile
     {
-        return $this->file;
+        return $this->uploadedFile;
     }
 
     /**
-     * @param mixed $file
+     * @param UploadedFile|null $uploadedFile
      */
-    public function setFile($file): void
+    public function setUploadedFile(?UploadedFile $uploadedFile): void
     {
-        $this->file = $file;
+        $this->uploadedFile = $uploadedFile;
     }
-
-
-
 }

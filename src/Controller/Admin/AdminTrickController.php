@@ -57,12 +57,15 @@ class AdminTrickController extends AbstractController
      */
     public function edit(Trick $trick,Request $request )
     {
-         $form = $this->createForm(TrickType::class,$trick );
+         $form = $this->createForm(TrickType::class,$trick,  [
+                "validation_groups" => ["Default", "add"]
+             ]
+         );
          $form->handleRequest($request);
 
          if($form->isSubmitted() && $form->isValid()){
-             $this->objectManager->flush();
              $this->objectManager->persist($trick);
+             $this->objectManager->flush();
              return $this->redirectToRoute('admin.trick.index');
          }
          return $this->render('admin/tricks/edit.html.twig', [
@@ -82,8 +85,6 @@ class AdminTrickController extends AbstractController
          $form->handleRequest($request);
 
          if($form->isSubmitted() && $form->isValid()){
-             
-
              $this->objectManager->persist($trick);
              $this->objectManager->flush();
              return $this->redirectToRoute('admin.trick.index');

@@ -39,17 +39,12 @@ class TrickType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,])
-            /*->add('medias', CollectionType::class,
-                    array(
-                        'entry_type'   		=> MediaType::class,
-                        'prototype'			=> true,
-                        'allow_add'			=> true,
-                        'allow_delete'		=> true,
-                        'by_reference' 		=> false,
-                        'required'			=> false,
-                        'label'			=> false,
-                    )
-                )*/
+            ->add("medias", CollectionType::class, [
+                "entry_type" => MediaType::class,
+                "allow_add" => true,
+                "allow_delete" => true,
+                "by_reference" => false
+            ])
             ;
     }
 
